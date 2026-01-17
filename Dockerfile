@@ -8,9 +8,9 @@ WORKDIR /srv/app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Install dependencies with 'install' so it generates lockfile if missing
 ENV CI=true
-RUN npm ci
+RUN npm install
 
 # Copy the rest of the source code
 COPY . .
