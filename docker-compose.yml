@@ -20,12 +20,18 @@ services:
       SMTP_PASSWORD: ${SENDGRID_API_KEY}
       SMTP_FROM: ${SMTP_FROM_EMAIL}
       SMTP_REPLY_TO: ${SMTP_REPLY_TO_EMAIL}
-      NODE_ENV: production
+      NODE_ENV: development
     volumes:
       - ./data/strapi-content/tmp:/srv/app/.tmp
       - ./data/strapi-content/uploads:/srv/app/public/uploads
     networks:
       - cms-network
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:1337/_health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 120s
 
   caddy:
     image: caddy:2-alpine
@@ -45,7 +51,8 @@ services:
     networks:
       - cms-network
     depends_on:
-      - strapi
+      strapi:
+        condition: service_healthy
 
 networks:
   cms-network:
