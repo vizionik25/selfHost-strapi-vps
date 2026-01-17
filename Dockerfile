@@ -1,30 +1,26 @@
 FROM node:20-alpine
 
+# Install runtime dependencies for 'better-sqlite3' and sharp
 RUN apk add --no-cache build-base gcc autoconf automake zlib-dev libpng-dev vips-dev
 
 WORKDIR /srv/app
 
-# Set CI=true to bypass Strapi interactive prompts
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
 ENV CI=true
+RUN npm ci
 
-# Create Strapi project
-RUN npx create-strapi-app@latest . \
-    --no-run \
-    --dbclient=sqlite \
-    --dbfile=.tmp/data.db \
-    --skip-cloud \
-    --no-example
+# Copy the rest of the source code
+COPY . .
 
-# Verify installation happened
-RUN ls -la && cat package.json
-
-# Install SendGrid provider
-RUN npm install @strapi/provider-email-sendgrid
-
-# Build for production
+# Build Strapi admin panel
 ENV NODE_ENV=production
 RUN npm run build
 
+# Expose port
 EXPOSE 1337
 
+# Start Strapi
 CMD ["npm", "run", "start"]

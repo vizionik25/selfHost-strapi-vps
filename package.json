@@ -1,0 +1,31 @@
+{
+    "name": "strapi-cms",
+    "private": true,
+    "version": "1.0.0",
+    "description": "Self-hosted Strapi CMS",
+    "scripts": {
+        "develop": "strapi develop",
+        "start": "strapi start",
+        "build": "strapi build",
+        "strapi": "strapi"
+    },
+    "dependencies": {
+        "@strapi/strapi": "^5.0.0",
+        "@strapi/plugin-users-permissions": "^5.0.0",
+        "@strapi/plugin-i18n": "^5.0.0",
+        "@strapi/plugin-cloud": "^5.0.0",
+        "better-sqlite3": "^9.4.3",
+        "@strapi/provider-email-sendgrid": "^5.0.0",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
+        "react-router-dom": "^6.0.0",
+        "styled-components": "^6.0.0"
+    },
+    "engines": {
+        "node": ">=18.0.0 <=22.x.x",
+        "npm": ">=6.0.0"
+    },
+    "strapi": {
+        "uuid": "generated-uuid"
+    }
+}
