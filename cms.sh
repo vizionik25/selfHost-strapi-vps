@@ -55,8 +55,8 @@ cmd_start() {
     check_env
     fill_security_keys
     
-    print_info "Starting Strapi CMS..."
-    dc up -d
+    print_info "Building and starting Strapi CMS..."
+    dc up -d --build
     print_ok "Started! First boot takes ~2 min."
     
     source "${SCRIPT_DIR}/.env" 2>/dev/null
