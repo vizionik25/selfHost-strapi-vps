@@ -4,22 +4,19 @@ RUN apk add --no-cache build-base gcc autoconf automake zlib-dev libpng-dev vips
 
 WORKDIR /srv/app
 
-# Create Strapi project
+# Force cache bust - v2
 RUN npx create-strapi-app@latest . \
     --no-run \
     --dbclient=sqlite \
     --dbfile=.tmp/data.db \
-    --skip-cloud
+    --skip-cloud \
+    && ls -la
 
-# Show what we have
-RUN echo "=== package.json ===" && cat package.json && echo "=== node_modules/.bin ===" && ls -la node_modules/.bin/
-
-# Install SendGrid provider
+# Install SendGrid provider  
 RUN npm install @strapi/provider-email-sendgrid
 
 ENV NODE_ENV=development
 
 EXPOSE 1337
 
-# Use strapi from node_modules bin
-CMD ["node", "node_modules/@strapi/strapi/bin/strapi.js", "develop"]
+CMD ["npm", "start"]
