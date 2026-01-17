@@ -20,7 +20,7 @@ services:
       SMTP_PASSWORD: ${SENDGRID_API_KEY}
       SMTP_FROM: ${SMTP_FROM_EMAIL}
       SMTP_REPLY_TO: ${SMTP_REPLY_TO_EMAIL}
-      NODE_ENV: development
+      NODE_ENV: production
     volumes:
       - ./data/strapi-content/tmp:/srv/app/.tmp
       - ./data/strapi-content/uploads:/srv/app/public/uploads
