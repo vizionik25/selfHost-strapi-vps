@@ -10,9 +10,9 @@ RUN npx create-strapi-app@latest . --no-run --dbclient=sqlite --dbfile=.tmp/data
 # Install SendGrid provider
 RUN npm install @strapi/provider-email-sendgrid
 
-# Build admin panel
+# Build admin panel using local strapi
 ENV NODE_ENV=production
-RUN npx strapi build
+RUN node ./node_modules/@strapi/strapi/bin/strapi.js build
 
 EXPOSE 1337
-CMD ["npx", "strapi", "start"]
+CMD ["node", "./node_modules/@strapi/strapi/bin/strapi.js", "start"]
