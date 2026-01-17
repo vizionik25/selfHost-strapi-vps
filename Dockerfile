@@ -4,12 +4,11 @@ RUN apk add --no-cache build-base gcc autoconf automake zlib-dev libpng-dev vips
 
 WORKDIR /srv/app
 
-# Create Strapi project (--yes skips all prompts including cloud login)
-RUN npx create-strapi-app@latest . \
+# Create Strapi project - pipe "Skip" to handle cloud prompt
+RUN echo "Skip" | npx create-strapi-app@latest . \
     --no-run \
     --dbclient=sqlite \
-    --dbfile=.tmp/data.db \
-    --yes
+    --dbfile=.tmp/data.db
 
 # Install SendGrid provider  
 RUN npm install @strapi/provider-email-sendgrid
