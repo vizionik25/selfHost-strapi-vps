@@ -29,8 +29,32 @@ check_env() {
     [ -f "${SCRIPT_DIR}/.env" ] || { print_warn ".env not found. Run: cp .env.example .env && nano .env"; exit 1; }
 }
 
+generate_key() {
+    openssl rand -base64 32
+}
+
+fill_security_keys() {
+    local env_file="${SCRIPT_DIR}/.env"
+    
+    print_info "Generating security keys..."
+    
+    # Generate APP_KEYS (4 comma-separated keys)
+    local app_keys="$(generate_key),$(generate_key),$(generate_key),$(generate_key)"
+    sed -i "s|^APP_KEYS=.*|APP_KEYS=${app_keys}|" "$env_file"
+    
+    # Generate individual keys
+    sed -i "s|^API_TOKEN_SALT=.*|API_TOKEN_SALT=$(generate_key)|" "$env_file"
+    sed -i "s|^ADMIN_JWT_SECRET=.*|ADMIN_JWT_SECRET=$(generate_key)|" "$env_file"
+    sed -i "s|^TRANSFER_TOKEN_SALT=.*|TRANSFER_TOKEN_SALT=$(generate_key)|" "$env_file"
+    sed -i "s|^JWT_SECRET=.*|JWT_SECRET=$(generate_key)|" "$env_file"
+    
+    print_ok "Security keys generated and saved to .env"
+}
+
 cmd_start() {
     check_env
+    fill_security_keys
+    
     print_info "Starting Strapi CMS..."
     dc up -d
     print_ok "Started! First boot takes ~2 min."
@@ -127,7 +151,7 @@ cmd_help() {
     echo "Usage: $0 <command>"
     echo ""
     echo "Commands:"
-    echo "  start     Start services"
+    echo "  start     Start services (auto-generates security keys)"
     echo "  stop      Stop services"
     echo "  restart   Restart services"
     echo "  status    Show status + data usage"
