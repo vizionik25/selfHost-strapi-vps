@@ -1,0 +1,11 @@
+.env
+backups/
+
+# Ignore data contents but keep directory structure
+data/caddy/data/*
+data/caddy/config/*
+data/strapi-content/tmp/*
+data/strapi-content/uploads/*
+
+# Keep the .gitkeep files
+!data/**/.gitkeep

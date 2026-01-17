@@ -1,0 +1,18 @@
+{$DOMAIN} {
+    tls {$ACME_EMAIL}
+    
+    # Security headers
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        X-Frame-Options "SAMEORIGIN"
+        X-Content-Type-Options "nosniff"
+        -Server
+    }
+    
+    encode gzip
+    
+    reverse_proxy strapi:1337 {
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+}
