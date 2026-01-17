@@ -1,14 +1,11 @@
 services:
-  # ===========================================
-  # Strapi CMS (Official Image)
-  # ===========================================
   strapi:
-    image: strapi/strapi:latest
+    build: .
     container_name: strapi-cms
     restart: unless-stopped
     environment:
       DATABASE_CLIENT: sqlite
-      DATABASE_FILENAME: /srv/app/.tmp/data.db
+      DATABASE_FILENAME: .tmp/data.db
       HOST: 0.0.0.0
       PORT: 1337
       PUBLIC_URL: ${PUBLIC_URL}
@@ -25,22 +22,11 @@ services:
       SMTP_REPLY_TO: ${SMTP_REPLY_TO_EMAIL}
       NODE_ENV: production
     volumes:
-      # SQLite database + Strapi temp data
       - ./data/strapi-content/tmp:/srv/app/.tmp
-      # Media uploads
       - ./data/strapi-content/uploads:/srv/app/public/uploads
     networks:
       - cms-network
-    healthcheck:
-      test: [ "CMD", "wget", "--spider", "-q", "http://localhost:1337/_health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 120s
 
-  # ===========================================
-  # Caddy Reverse Proxy (Automatic SSL)
-  # ===========================================
   caddy:
     image: caddy:2-alpine
     container_name: caddy-proxy
@@ -54,9 +40,7 @@ services:
       ACME_EMAIL: ${ACME_EMAIL}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      # SSL certificates + Caddy data
       - ./data/caddy/data:/data
-      # Caddy config cache
       - ./data/caddy/config:/config
     networks:
       - cms-network
