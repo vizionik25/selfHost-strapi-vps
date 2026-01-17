@@ -4,15 +4,16 @@ RUN apk add --no-cache build-base gcc autoconf automake zlib-dev libpng-dev vips
 
 WORKDIR /srv/app
 
-# Create Strapi project
-RUN npx create-strapi-app@latest . --no-run --dbclient=sqlite --dbfile=.tmp/data.db
+# Create Strapi project and show available scripts
+RUN npx create-strapi-app@latest . --no-run --dbclient=sqlite --dbfile=.tmp/data.db \
+    && cat package.json
 
 # Install SendGrid provider
 RUN npm install @strapi/provider-email-sendgrid
 
-ENV NODE_ENV=production
+ENV NODE_ENV=development
 
 EXPOSE 1337
 
-# Start Strapi (will build admin on first run if needed)
-CMD ["npm", "run", "develop"]
+# Use the strapi CLI from node_modules
+CMD ["./node_modules/.bin/strapi", "develop"]
